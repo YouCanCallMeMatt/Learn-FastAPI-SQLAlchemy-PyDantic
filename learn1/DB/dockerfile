@@ -1,0 +1,15 @@
+# Use the official PostgreSQL image from the Docker Hub
+FROM postgres:latest
+
+# Set environment variables for the database
+ENV POSTGRES_DB=learn1_database
+ENV POSTGRES_USER=admin
+ENV POSTGRES_PASSWORD=123456
+
+# Optional: Copy initialization scripts
+# If you have SQL scripts to initialize the database, you can copy them into the container.
+# Place your SQL files in a folder named 'initdb' in the same directory as this Dockerfile.
+COPY initdb/*.sql /docker-entrypoint-initdb.d/
+
+# Expose the PostgreSQL port
+EXPOSE 5432

@@ -2,19 +2,43 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 from fastapi import FastAPI, Depends, HTTPException
 from typing import List, Optional
 
 app = FastAPI()
 
-DATABASE_URL = "sqlite:///./test.db"
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust this to your frontend's URL in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+## FOR SQLite
+# DATABASE_URL = "sqlite:///./test.db"
+
+# engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+
+# For PostgreSQL
+# for local run
+DATABASE_URL = "postgresql://admin:123456@localhost:5432/learn1_database"
+# DATABASE_URL = "postgresql://admin:123456@learn1-db-container:5432/learn1_database"
+
+engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
+
+@app.get("/")
+def index():
+    return {"message": "BE is Running!"}
+
+
 
 # Connect DB
 def get_db():
